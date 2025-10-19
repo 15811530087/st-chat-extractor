@@ -1,11 +1,12 @@
 {
-    "display_name": "Name Displayed in SillyTavern",
-    "loading_order": 9,
+    "display_name": "Summary Extractor",
+    "loading_order": 14,
     "requires": [],
     "optional": [],
     "js": "index.js",
     "css": "style.css",
-    "author": "yourNameHere",
+    "author": "wuhao",
     "version": "1.0.0",
-    "homePage": "yourUrlHere"
+    "homePage": "https://github.com/15811530087/st-chat-extractor",
+    "auto_update": true
 }
