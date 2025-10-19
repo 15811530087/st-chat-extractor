@@ -170,6 +170,20 @@ function extractDetailsFromJsonlText(jsonlText, targetKey) {
 async function onUpdateButtonClick() {
   setChatName(getCurrentChatId());
 }
+async function onCopyButtonClick() {
+  const outputElement = document.getElementById('output');
+  const textarea = document.createElement("textarea");
+  textarea.value = outputElement.textContent;
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand("copy");
+    alert("✅ 已复制到剪贴板！");
+  } catch (err) {
+    alert("❌ 复制失败：" + err);
+  }
+  document.body.removeChild(textarea);
+}
 
 /**
  * Get list of chat names for a character.
@@ -274,6 +288,7 @@ jQuery(async () => {
   // These are examples of listening for events
   $("#my_button").on("click", onButtonClick);
   $("#update_button").on("click", onUpdateButtonClick);
+   $("#copyBtn").on("click", onCopyButtonClick);
   // Load settings when starting things up (if you have any)
   loadSettings();
   //document.getElementById('chat_select').addEventListener('change', onChatNameChange);
