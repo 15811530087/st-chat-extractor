@@ -201,7 +201,7 @@ function setChatName(name) {
     const isNotInChat = !name;
     chatName.innerHTML = '';
     const selectedOption = document.createElement('option');
-    selectedOption.innerText = name || `No chat selected`;
+    selectedOption.innerHTML = name || `🍤请点击上方按钮更新🍤`;
     selectedOption.selected = true;
     chatName.appendChild(selectedOption);
     chatName.disabled = true;
