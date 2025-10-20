@@ -73,13 +73,22 @@ async function onButtonClick() {
           
           const textToShow = extractDetailsFromJsonlText(data.result, `mes`);
           
-          if(textToShow != null) {
-            const finalHtmlOutput = textToShow.join('');
-            if(finalHtmlOutput != ''){ 
-                outputElement.innerHTML = finalHtmlOutput; 
-            } else {
-                outputElement.textContent = '提取失败请检查输入文本再抓🍤';
+          if(textToShow == null) {
+            return;
+          }
+          const finalHtmlOutput = textToShow.join('');
+          if(finalHtmlOutput != '') { 
+            const deleteText = document.getElementById('my_box4');
+            if(deleteText.value != '') {
+                const regex = new RegExp('<' + deleteText + '[^>]*>.*?<\\/' + deleteText + '>', 'gi');
+
+                const processedHtmlOutput = finalHtmlOutput.replaceAll(regex, '');
+                outputElement.innerHTML = processedHtmlOutput; 
+                return;
             }
+            outputElement.innerHTML = finalHtmlOutput; 
+          } else {
+            outputElement.textContent = '提取失败请检查输入文本再抓🍤';
           }
      } catch (error) {
           // display error message
