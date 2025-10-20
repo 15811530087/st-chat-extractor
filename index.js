@@ -70,11 +70,16 @@ async function onButtonClick() {
           
           const data = await response.json();
           const outputElement = document.getElementById('output');
+          
           const textToShow = extractDetailsFromJsonlText(data.result, `mes`);
           
           if(textToShow != null) {
             const finalHtmlOutput = textToShow.join('');
-            outputElement.innerHTML = finalHtmlOutput; 
+            if(finalHtmlOutput != ''){ 
+                outputElement.innerHTML = finalHtmlOutput; 
+            } else {
+                outputElement.textContent = '提取失败请检查输入文本再抓🍤';
+            }
           }
      } catch (error) {
           // display error message
@@ -83,13 +88,14 @@ async function onButtonClick() {
      }
 
 }
-function extractDetailsContentFromHtmlString(htmlString) {
+function extractDetailsContentFromHtmlString(htmlString, inputLabel1, inputLabel2, inputExtractWords) {
     const parser = new DOMParser();
     // 将 HTML 字符串解析为一个临时的 DOM 文档
     const doc = parser.parseFromString(htmlString, 'text/html');
     
+    
     // 查找文档中所有的 <details> 元素
-    const detailsElements = doc.querySelectorAll('details');
+    const detailsElements = doc.querySelectorAll(inputLabel1);
     const extractedContents = [];
 
     detailsElements.forEach(detailsElement => {
@@ -97,7 +103,7 @@ function extractDetailsContentFromHtmlString(htmlString) {
         const summaryElement = detailsElement.firstElementChild;
 
         // 对应 Python 逻辑：检查元素是 <summary> 且其文本内容是 “摘要”
-        if (summaryElement && summaryElement.tagName === 'SUMMARY' && summaryElement.textContent.trim() === '摘要') {
+        if (summaryElement && summaryElement.tagName === inputLabel2.toUpperCase() && summaryElement.textContent.trim() === inputExtractWords) {
             
             // 对应 Python 中的 summary.decompose() 之后的逻辑：从下一个兄弟节点开始提取
             let currentNode = summaryElement.nextSibling;
@@ -115,7 +121,7 @@ function extractDetailsContentFromHtmlString(htmlString) {
                 
                 currentNode = currentNode.nextSibling;
             }
-        } 
+        }  
 
         if (contentText.trim().length > 0) {
             extractedContents.push(contentText.trim() + '<br>');
@@ -132,6 +138,22 @@ function extractDetailsFromJsonlText(jsonlText, targetKey) {
     
     const extractedContents = [];
     
+    const label1 = document.getElementById('my_box1');
+    const label2 = document.getElementById('my_box2');
+    const extractWords = document.getElementById('my_box3');
+    let inputLabel1 = label1.value;
+    let inputLabel2 = label2.value;
+    let inputExtractWords = extractWords.value;
+    if(inputLabel1 == '') {
+        inputLabel1 = 'details';
+    }
+    if(inputLabel2 == '') {
+        inputLabel2 = 'SUMMARY';
+    }
+    if(inputExtractWords == '') {
+        inputExtractWords = '摘要';
+    }
+    console.log('inputLabel1 = ' + inputLabel1 + ' inputLabel2 = ' + inputLabel2 + 'inputExtractWords = ' + inputExtractWords);
     // 1. 模拟 Python 的文件读取和按行遍历
     // 使用可靠的分割方法：匹配所有换行符
     const lines = jsonlText.split(/\r\n|\n|\r/g).filter(Boolean);
@@ -151,11 +173,15 @@ function extractDetailsFromJsonlText(jsonlText, targetKey) {
             const htmlContent = data[targetKey];
             
             // 4. 检查内容是否为字符串且包含 <details>
-            if (typeof htmlContent === 'string' && htmlContent.includes('<details>')) {
+            if (typeof htmlContent === 'string' && htmlContent.includes('<' + inputLabel1 + '>')) {
                 // 5. 调用核心 HTML 解析函数
-                const extracted = extractDetailsContentFromHtmlString(htmlContent);
+                if(inputLabel2 == ''){
+                    extractedContents.push(String(htmlContent));
+                } else {
+                    const extracted = extractDetailsContentFromHtmlString(htmlContent, inputLabel1, inputLabel2, inputExtractWords);
                 
-                extractedContents.push(...extracted);
+                    extractedContents.push(...extracted);
+                }
             }
         } catch (e) {
             // 模拟 Python 的 json.JSONDecodeError 异常处理
@@ -288,7 +314,19 @@ jQuery(async () => {
   // These are examples of listening for events
   $("#my_button").on("click", onButtonClick);
   $("#update_button").on("click", onUpdateButtonClick);
-   $("#copyBtn").on("click", onCopyButtonClick);
+  $("#copyBtn").on("click", onCopyButtonClick);
+  const inputElement = document.getElementById('my_box2');
+  inputElement.addEventListener('input', function(event) {
+    
+    // (通常用于表单验证)
+    const inputKey = document.getElementById('my_box3');
+    if (event.target.value == '') {
+        inputKey.disabled = true;
+        inputKey.value = '';
+    } else {
+         inputKey.disabled = false;
+    }
+  });
   // Load settings when starting things up (if you have any)
   loadSettings();
   //document.getElementById('chat_select').addEventListener('change', onChatNameChange);

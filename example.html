@@ -1,5 +1,41 @@
 <!-- You might want to add additional HTML elements to ST. 
     It's good practice to separate it out from your code -->
+<head>
+    <meta charset="UTF-8">
+    <title>黑底白字文本框</title>
+    
+    <style>
+        /*
+         * 这个选择器会选中页面上所有 type="text" 的 <input> 元素
+         */
+        input[type="text"] {
+            background-color: #000000;  /* 背景颜色：黑色 */
+            color: #FFFFFF;             /* 文字颜色：白色 */
+            
+            /* (可选) 默认边框在黑底上可能看不清，我们加一个灰色边框 */
+            border: 1px solid #555;
+            
+            /* (可选) 提示文字默认是灰色，在黑底上看不清，改成亮灰色 */
+            padding: 5px; /* (可选) 增加一点内边距，让它更好看 */
+        }
+        
+        /* * (可选) 单独设置提示文字(placeholder)的样式 
+         */
+        input[type="text"]::placeholder {
+            color: #AAAAAA; /* 提示文字使用浅灰色 */
+        }
+    </style>
+    <style>
+
+        .full-width-description {
+            width: 100%;         /* 2. (关键!) 让这个 div 占满 100% 宽度 */
+            
+            margin-bottom: 1px; /* 和下面的控件分开一点 */
+        }
+
+    </style>
+    
+</head>
 <div class="example-extension-settings">
     <div class="inline-drawer">
         <div class="inline-drawer-toggle inline-drawer-header">
@@ -8,7 +44,13 @@
         </div>
         <div class="inline-drawer-content">
             <div class="example-extension_block flex-container">
-                <input id="update_button" class="menu_button" type="submit" value="更新列表" />
+                <input id="update_button" class="menu_button" type="submit" value="点击此处更新列表" />
+                <div class="full-width-description">
+                <p>修改下方文本替换筛选标签，抓取内容为&lt;标签1&gt;&lt;标签2&gt;关键字&lt;/标签2&gt;抓取此内容&lt;/标签1&gt;,标签2清空后改为&lt;标签1&gt;抓取此内容&lt;/标签1&gt;。</p>
+                </div>
+                <p>标签1</p><input type="text" id="my_box1" type="submit" value="details">
+                <p>标签2</p><input type="text" id="my_box2" type="submit" value="SUMMARY" placeholder='输入文本后启用'>
+                <p>关键字</p><input type="text" id="my_box3" type="submit" value="摘要" placeholder='标签2有内容时可修改'>
                 <select id="chat_select">
                 </select>
                 <input id="my_button" class="menu_button" type="submit" value="摘要提取" />
